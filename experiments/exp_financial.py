@@ -44,6 +44,9 @@ class Exp_financial(Exp_Basic):
             
         if self.args.dataset_name == 'traffic':
             self.input_dim = 862
+
+        if self.args.dataset_name == 'OpenData_ST':
+            self.input_dim = 199
         
         if self.args.decompose:
             model = SCINet_decomp(
@@ -98,6 +101,9 @@ class Exp_financial(Exp_Basic):
             
         if self.args.dataset_name == 'traffic':
             self.args.data = './datasets/financial/traffic.txt'
+
+        if self.args.dataset_name == 'OpenData_ST':
+            self.args.data = './datasets/OpenData_ST/generation.txt'
 
         if self.args.long_term_forecast:
             return DataLoaderH(self.args.data, 0.7, 0.1, self.args.horizon, self.args.window_size, 4)
