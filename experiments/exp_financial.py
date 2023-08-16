@@ -11,7 +11,6 @@ import torch.nn as nn
 from torch import optim
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
-from torch.utils.tensorboard import SummaryWriter
 from metrics.Finantial_metics import MSE, MAE
 from experiments.exp_basic import Exp_Basic
 from data_process.financial_dataloader import DataLoaderH
@@ -30,7 +29,6 @@ class Exp_financial(Exp_Basic):
             self.criterion = nn.MSELoss(size_average=False).cuda()
         self.evaluateL2 = nn.MSELoss(size_average=False).cuda()
         self.evaluateL1 = nn.L1Loss(size_average=False).cuda()
-        self.writer = SummaryWriter('.exp/run_financial/{}'.format(args.model_name))
     
     def _build_model(self):
         if self.args.dataset_name == 'electricity':
@@ -219,23 +217,6 @@ class Exp_financial(Exp_Basic):
             elif self.args.stacks == 2:
                 val_loss, val_rae, val_corr, val_rse_mid, val_rae_mid, val_correlation_mid, val_mse, val_mae =self.validate(data, data.valid[0],data.valid[1])
                 test_loss, test_rae, test_corr, test_rse_mid, test_rae_mid, test_correlation_mid, test_mse, test_mae = self.validate(data, data.test[0],data.test[1])
-
-            self.writer.add_scalar('Train_loss_tatal', total_loss / n_samples, global_step=epoch)
-            self.writer.add_scalar('Train_loss_Final', final_loss / n_samples, global_step=epoch)
-            self.writer.add_scalar('Validation_final_rse', val_loss, global_step=epoch)
-            self.writer.add_scalar('Validation_final_rae', val_rae, global_step=epoch)
-            self.writer.add_scalar('Validation_final_corr', val_corr, global_step=epoch)
-            self.writer.add_scalar('Test_final_rse', test_loss, global_step=epoch)
-            self.writer.add_scalar('Test_final_rae', test_rae, global_step=epoch)
-            self.writer.add_scalar('Test_final_corr', test_corr, global_step=epoch)
-            if self.args.stacks == 2:
-                self.writer.add_scalar('Train_loss_Mid', min_loss / n_samples, global_step=epoch)
-                self.writer.add_scalar('Validation_mid_rse', val_rse_mid, global_step=epoch)
-                self.writer.add_scalar('Validation_mid_rae', val_rae_mid, global_step=epoch)
-                self.writer.add_scalar('Validation_mid_corr', val_correlation_mid, global_step=epoch)
-                self.writer.add_scalar('Test_mid_rse', test_rse_mid, global_step=epoch)
-                self.writer.add_scalar('Test_mid_rae', test_rae_mid, global_step=epoch)
-                self.writer.add_scalar('Test_mid_corr', test_correlation_mid, global_step=epoch)
 
             print(
                 '| EncoDeco: end of epoch {:3d} | time: {:5.2f}s | train_loss {:5.4f} | valid rse {:5.4f} | valid rae {:5.4f} | valid corr  {:5.4f}| valid mse {:5.4f} | valid mae  {:5.4f}|'

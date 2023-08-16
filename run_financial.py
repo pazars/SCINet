@@ -5,7 +5,6 @@ from experiments.exp_financial import Exp_financial
 import argparse
 import pandas as pd
 import numpy as np
-from torch.utils.tensorboard import SummaryWriter
 
 parser = argparse.ArgumentParser(description='SCINet on financial datasets')
 ### -------  dataset settings --------------

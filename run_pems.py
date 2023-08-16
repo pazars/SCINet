@@ -5,7 +5,6 @@ from experiments.exp_pems import Exp_pems
 import argparse
 import pandas as pd
 import numpy as np
-from torch.utils.tensorboard import SummaryWriter
 
 parser = argparse.ArgumentParser(description='SCINet on pems datasets')
 

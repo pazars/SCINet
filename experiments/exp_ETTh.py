@@ -7,7 +7,6 @@ import torch
 import torch.nn as nn
 from torch import optim
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
 import warnings
 warnings.filterwarnings('ignore')
 from data_process.etth_data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_Pred
@@ -217,7 +216,6 @@ class Exp_ETTh(Exp_Basic):
         print(path)
         if not os.path.exists(path):
             os.makedirs(path)
-        writer = SummaryWriter('event/run_ETTh/{}'.format(self.args.model_name))
 
         time_now = time.time()
         
@@ -283,10 +281,6 @@ class Exp_ETTh(Exp_Basic):
 
             print("Epoch: {0}, Steps: {1} | Train Loss: {2:.7f} valid Loss: {3:.7f} Test Loss: {4:.7f}".format(
                 epoch + 1, train_steps, train_loss, valid_loss, test_loss))
-
-            writer.add_scalar('train_loss', train_loss, global_step=epoch)
-            writer.add_scalar('valid_loss', valid_loss, global_step=epoch)
-            writer.add_scalar('test_loss', test_loss, global_step=epoch)
 
             early_stopping(valid_loss, self.model, path)
             if early_stopping.early_stop:

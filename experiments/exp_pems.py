@@ -14,7 +14,6 @@ from experiments.exp_basic import Exp_Basic
 from data_process.forecast_dataloader import ForecastDataset,ForecastTestDataset, de_normalized
 from utils.tools import EarlyStopping, adjust_learning_rate, save_model, load_model
 from metrics.ETTh_metrics import metric
-from torch.utils.tensorboard import SummaryWriter
 from utils.math_utils import evaluate, creatMask
 from models.SCINet import SCINet
 from models.SCINet_decompose import SCINet_decompose
@@ -223,30 +222,6 @@ class Exp_pems(Exp_Basic):
             score1 = evaluate(target, mid)
         #end = datetime.now()
 
-        if writer:
-            if test:
-                print(f'TEST: RAW : MAE {score[1]:7.2f};MAPE {score[0]:7.2f}; RMSE {score[2]:7.2f}.')
-                writer.add_scalar('Test MAE_final', score[1], global_step=epoch)
-                writer.add_scalar('Test RMSE_final', score[2], global_step=epoch)
-                if self.args.stacks == 2:
-                    print(f'TEST: RAW-Mid : MAE {score1[1]:7.2f}; MAPE {score[0]:7.2f}; RMSE {score1[2]:7.2f}.')
-                    writer.add_scalar('Test MAE_Mid', score1[1], global_step=epoch)
-                    writer.add_scalar('Test RMSE_Mid', score1[2], global_step=epoch)
-                    writer.add_scalar('Test Loss_final', loss_F, global_step=epoch)
-                    writer.add_scalar('Test Loss_Mid', loss_M, global_step=epoch)
-
-            else:
-                print(f'VAL: RAW : MAE {score[1]:7.2f}; RMSE {score[2]:7.2f}.')
-                writer.add_scalar('VAL MAE_final', score[1], global_step=epoch)
-                writer.add_scalar('VAL RMSE_final', score[2], global_step=epoch)
-
-                if self.args.stacks == 2:
-                    print(f'VAL: RAW-Mid : MAE {score1[1]:7.2f}; RMSE {score1[2]:7.2f}.')
-                    writer.add_scalar('VAL MAE_Mid', score1[1], global_step=epoch)
-                    writer.add_scalar('VAL RMSE_Mid', score1[2], global_step=epoch)
-                    writer.add_scalar('VAL Loss_final', loss_F, global_step=epoch)
-                    writer.add_scalar('VAL Loss_Mid', loss_M, global_step=epoch)
-
         if result_file:
             if not os.path.exists(result_file):
                 os.makedirs(result_file)
@@ -272,7 +247,6 @@ class Exp_pems(Exp_Basic):
         best_validate_mae = np.inf
         best_test_mae = np.inf
         validate_score_non_decrease_count = 0
-        writer = SummaryWriter('exp/run_PEMS/{}_scinet'.format(self.args.model_name))
         
         performance_metrics = {}
 
@@ -316,10 +290,6 @@ class Exp_pems(Exp_Basic):
                 print('| end of epoch {:3d} | time: {:5.2f}s | train_total_loss {:5.4f}, loss_F {:5.4f}, loss_M {:5.4f}  '.format(epoch, (
                     time.time() - epoch_start_time), loss_total / cnt, loss_total_F / cnt, loss_total_M / cnt))
 
-            writer.add_scalar('Train_loss_tatal', loss_total / cnt, global_step=epoch)
-            if self.args.stacks == 2:
-                writer.add_scalar('Train_loss_Mid', loss_total_F / cnt, global_step=epoch)
-                writer.add_scalar('Train_loss_Final', loss_total_M / cnt, global_step=epoch)
 
             if (epoch+1) % self.args.exponential_decay_step == 0:
                 my_lr_scheduler.step()
@@ -328,10 +298,10 @@ class Exp_pems(Exp_Basic):
                 print('------ validate on data: VALIDATE ------')
                 performance_metrics = self.validate(self.model, epoch, forecast_loss, valid_loader, self.args.norm_method, val_normalize_statistic,
                             node_cnt, self.args.window_size, self.args.horizon,
-                            writer, result_file=None, test=False)
+                            writer=None, result_file=None, test=False)
                 test_metrics = self.validate(self.model, epoch,  forecast_loss, test_loader, self.args.norm_method, test_normalize_statistic,
                             node_cnt, self.args.window_size, self.args.horizon,
-                            writer, result_file=None, test=True)
+                            writer=None, result_file=None, test=True)
                 if best_validate_mae > performance_metrics['mae']:
                     best_validate_mae = performance_metrics['mae']
                     is_best_for_now = True
