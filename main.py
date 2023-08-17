@@ -1,14 +1,14 @@
 import argparse
 import torch
-import yaml
+import json
 
 from datetime import datetime
 from experiments.main_run import SCINetPipeline
 
 
 if __name__ == "__main__":
-    with open("config.yaml", "r") as file:
-        config = yaml.safe_load(file)
+    with open("config.json", "r") as file:
+        config = json.load(file)
 
     args = argparse.Namespace()
     for key, value in config.items():
