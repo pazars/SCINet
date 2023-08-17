@@ -10,13 +10,13 @@ from torch.utils.data import DataLoader
 import warnings
 warnings.filterwarnings('ignore')
 from data_process.etth_data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_Pred
-from experiments.exp_basic import Exp_Basic
+from experiments.exp_basic import PipelineTemplate
 from utils.tools import EarlyStopping, adjust_learning_rate, save_model, load_model
 from metrics.ETTh_metrics import metric
 from models.SCINet import SCINet
 from models.SCINet_decompose import SCINet_decompose
 
-class Exp_ETTh(Exp_Basic):
+class Exp_ETTh(PipelineTemplate):
     def __init__(self, args):
         super(Exp_ETTh, self).__init__(args)
     

@@ -10,7 +10,7 @@ import torch.nn as nn
 from torch import optim
 from torch.utils.data import DataLoader
 
-from experiments.exp_basic import Exp_Basic
+from experiments.exp_basic import PipelineTemplate
 from data_process.forecast_dataloader import ForecastDataset,ForecastTestDataset, de_normalized
 from utils.tools import EarlyStopping, adjust_learning_rate, save_model, load_model
 from metrics.ETTh_metrics import metric
@@ -18,7 +18,7 @@ from utils.math_utils import evaluate, creatMask
 from models.SCINet import SCINet
 from models.SCINet_decompose import SCINet_decompose
 
-class Exp_pems(Exp_Basic):
+class Exp_pems(PipelineTemplate):
     def __init__(self, args):
         super(Exp_pems, self).__init__(args)
         self.result_file = os.path.join('exp/pems_checkpoint', self.args.dataset, 'checkpoints')
