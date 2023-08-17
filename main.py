@@ -1,8 +1,8 @@
+import argparse
 import torch
 import yaml
 
 from datetime import datetime
-from collections import namedtuple
 from experiments.main_run import SCINetPipeline
 
 
@@ -10,11 +10,12 @@ if __name__ == "__main__":
     with open("config.yaml", "r") as file:
         config = yaml.safe_load(file)
 
-    Args = namedtuple("Args", list(config.keys()))
-    args = Args(*list(config.values()))
+    args = argparse.Namespace()
+    for key, value in config.items():
+        setattr(args, key, value)
 
     if not args.long_term_forecast:
-        args = args._replace(concat_len = args.window_size - args.horizon)
+        args.concat_len = args.window_size - args.horizon
 
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
