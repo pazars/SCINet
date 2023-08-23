@@ -11,13 +11,13 @@ import torch.nn as nn
 from torch import optim
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
-from metrics.Finantial_metics import MSE, MAE
-from experiments.exp_basic import PipelineTemplate
-from data_process.financial_dataloader import DataLoaderH
-from utils.tools import EarlyStopping, adjust_learning_rate, save_model, load_model
-from metrics.ETTh_metrics import metric
-from utils.math_utils import smooth_l1_loss
-from models.SCINet import SCINet
+from scinet.metrics.Finantial_metics import MSE, MAE
+from scinet.experiments.exp_basic import PipelineTemplate
+from scinet.data_process.financial_dataloader import DataLoaderH
+from scinet.utils.tools import EarlyStopping, adjust_learning_rate, save_model, load_model
+from scinet.metrics.ETTh_metrics import metric
+from scinet.utils.math_utils import smooth_l1_loss
+from scinet.models.SCINet import SCINet
 
 class SCINetPipeline(PipelineTemplate):
     def __init__(self, args):
@@ -88,7 +88,12 @@ class SCINetPipeline(PipelineTemplate):
             self.args.data = './datasets/OpenData_ST/generation.txt'
 
         if self.args.dataset_name == 'generation_sample':
-            self.args.data = './datasets/sample/generation_small.txt'
+
+            dir_path = "gcs/us-central1-scinet-bucket/datasets/sample"
+
+            print(os.listdir(dir_path))
+
+            self.args.data = os.path.join(dir_path, "generation_small.txt'")
 
         if self.args.long_term_forecast:
             return DataLoaderH(self.args.data, 0.7, 0.1, self.args.horizon, self.args.window_size, 4)

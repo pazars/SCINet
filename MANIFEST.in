@@ -1,0 +1,2 @@
+include scinet/datasets/sample/*
+include scinet/config.json

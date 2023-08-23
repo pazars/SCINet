@@ -1,13 +1,18 @@
 import argparse
 import torch
 import json
+import os
 
 from datetime import datetime
-from experiments.main_run import SCINetPipeline
+from scinet.experiments.main_run import SCINetPipeline
 
 
 if __name__ == "__main__":
-    with open("config.json", "r") as file:
+
+    cwd = os.path.dirname(os.path.abspath(__file__))
+    cfg_path = os.path.join(cwd, "config.json")
+
+    with open(cfg_path, "r") as file:
         config = json.load(file)
 
     args = argparse.Namespace()

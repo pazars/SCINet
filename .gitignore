@@ -1,27 +1,5 @@
-log/
-model/
-datasets/
-dataset/
-*.txt
-*.pyc
-*.idea
-*.xml
-*.pth
-*.npe
-run/
-run_ETTh/
-run_financial/
-checkpoints/
-output/
-run_PEMS/
-pems_checkpoint/
-financial_checkpoints/
-ETT_checkpoints/
-exp/
-sandbox/
+build
+dist
+env
 
-# Exclude everything but the sample dataset directory
-!datasets
-datasets/*
-!datasets/sample
-!datasets/sample/*
+*.egg-info
